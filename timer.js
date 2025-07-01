@@ -8,7 +8,6 @@ const tallyEl = document.getElementById("tally");
 const body = document.body;
 const gracePeriod = 10 * 1000;
 const now = new Date();
-const todayISO = now.toISOString().slice(0, 10); // "YYYY-MM-DD"
 
 let setupStage = 0;
 let workDuration = 25;
@@ -67,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
       logEl.scrollTop = logEl.scrollHeight;
     }
     if (!data.skipLaunchLog) {  // Only log if skipLaunchLog is NOT set
-      addLog("Extension launched");
+      addLog("extension launched");
     } else {
       // reset the flag so future real reloads log launch
       chrome.storage.local.set({ skipLaunchLog: false });
@@ -160,7 +159,6 @@ function handleSetupClick() {
     setTimeout(() => {
       addLog("Cmd+I (Mac) or Ctrl+I (Windows) to re-enter setup mode");
     }, 160);
-    body.style.backgroundColor = "#CC0022";
     timerEl.textContent = `${workDuration.toString().padStart(2, "0")}:00:00`;
     startBtn.textContent = "start";
     setTimeout(() => {
@@ -183,6 +181,15 @@ function handleSetupClick() {
     }, 300);
   }
 }
+
+function getTodayString() {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, "0");
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const year = now.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 
 function initTimer() {
   // Reset any setup event listeners just in case
@@ -330,52 +337,41 @@ function initTimer() {
       
     });
   
+    saveState()
     updateTally();
   }
   
 
     // At init, check reset once
   chrome.storage.local.get(["lastResetDate"], (data) => {
-  const todayISO = new Date().toISOString().slice(0, 10);
+  const todayStr = getTodayString();
 
   if (!data.lastResetDate) {
     // First-ever launch — store today's date but don't reset anything
-    chrome.storage.local.set({ lastResetDate: todayISO });
-  } else if (data.lastResetDate !== todayISO) {
+    chrome.storage.local.set({ lastResetDate: todayStr });
+  } else if (data.lastResetDate !== todayStr) {
     // Only reset if date has changed (but only on Mondays, see below)
     const dayOfWeek = new Date().getDay(); // 0 = Sunday, 1 = Monday, ...
     if (dayOfWeek === 1) {
       resetAtMidnight();
-      chrome.storage.local.set({ lastResetDate: todayISO });
+      chrome.storage.local.set({ lastResetDate: todayStr });
     }
   }
 });
-  // Set precise timer to reset at next midnight
   
 
- 
-  // Continuous check to auto-reset at midnight, even if tab is left open
   setInterval(() => {
-    const now = new Date();
-    const todayISO = now.toISOString().slice(0, 10);
-  
-    if (todayISO !== lastCheckedDate) {
-      console.log("📅 New day detected:", todayISO);
-      lastCheckedDate = todayISO; // move here
-    
-      chrome.storage.local.get(["lastResetDate"], (data) => {
-        const storedResetDate = data.lastResetDate;
-        if (storedResetDate !== todayISO) {
-          console.log("🔄 Running midnight reset logic...");
-          resetAtMidnight();
-          chrome.storage.local.set({ lastResetDate: todayISO });
-        } else {
-          console.log("✅ Already reset today, skipping");
-        }
-      });
-    }    
-  }, 2000); // check every 2 seconds
-  
+    const today = getTodayString();
+    chrome.storage.local.get(["lastResetDate"], (data) => {
+      const lastResetDate = data.lastResetDate;
+      if (lastResetDate !== today) {
+        resetAtMidnight();
+        chrome.storage.local.set({ lastResetDate: today });
+      }
+    });
+  }, 10000);
+
+
   function formatDuration(ms) {
     if (ms <= 0) return "";
     const totalSeconds = Math.floor(ms / 1000);
@@ -429,12 +425,15 @@ function initTimer() {
     const now = new Date();
     const day = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
     const diff = now.getDate() - day + (day === 0 ? -6 : 1); // adjust when Sunday
-    const monday = new Date(now);
-    monday.setDate(diff);
-    const isoDate = monday.toISOString().slice(0, 10);
-    const dateParts = isoDate.split("-");
-    return `${dateParts[2]}/${dateParts[1]}/${dateParts[0].slice(2)}`; // "23/06/22"
-  }
+    const monday = new Date(now.setDate(diff));
+
+    const localDate = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate());
+    const dayStr = String(localDate.getDate()).padStart(2, "0");
+    const monthStr = String(localDate.getMonth() + 1).padStart(2, "0");
+    const yearStr = String(localDate.getFullYear()).slice(2);
+
+    return `${dayStr}/${monthStr}/${yearStr}`;
+}
 
   function logOvertime() {
     if (!lastSessionEnd) return;

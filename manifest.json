@@ -3,7 +3,7 @@
     "name": "Pomodoro Tab Timer",
     "version": "1.0",
     "description": "Pomodoro timer with sound, flash and system notifications.",
-    "permissions": [ "alarms", "notifications", "tabs", "storage"],
+    "permissions": ["notifications", "tabs", "storage"],
     "action": {
       "default_title": "Open Pomodoro Timer",
       "default_icon": {
