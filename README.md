@@ -1,8 +1,7 @@
-# ⏳ Pomodoro Timer Extension
+# ⏳ Pomodoro Timer Extension for Chrome
 
 A minimal, fast, and offline-friendly Pomodoro timer for Chrome — designed to help you stay focused and track your daily and weekly productivity without distractions.
 
-![Screenshot](screenshot.png) <!-- Optional: add a screenshot -->
 
 ## 🚀 Features
 
