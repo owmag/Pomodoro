@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pomodoro Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Monsieur+La+Doulaise&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <style>
+    
+    body {
+    cursor: default;
+    color: #ffffff;
+    font-family: sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background: #CC0022;
+    transition: background-color 1s ease;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    overscroll-behavior: none;
+    transition: background-color 0.6s ease-in-out;
+    }
+
+    h1 {
+    color: #ffccd5;
+    z-index: 2;
+    font-family: "Monsieur La Doulaise", cursive;
+    font-size: clamp(40px, 8vw, 80px); /* responsive between 40px and 80px */
+    margin: clamp(10px, 2vw, 20px) 0 clamp(10px, 2vw, 20px) 0; /* dynamic bottom margin */
+    position:fixed;
+    text-align: center;
+    top: 0;
+    }
+
+    #timer {
+    font-size: 25vw; /* scales but capped */
+    color: #ffffff;
+    margin: clamp(10px, 4vw, 40px) 0 clamp(10px, 4vw, 40px) 0; /* spacing below timer scales too */
+    position:fixed;
+    }
+
+    button {
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: clamp(20px, 5vw, 40px); /* scale but limited */
+    padding: 10px 20px;
+    margin: clamp(10px, 2vw, 20px); /* dynamic margin */
+    position: fixed;
+    bottom: 0;
+    z-index: 99;
+    }
+
+    button:disabled {
+    visibility: hidden;
+    }
+
+    #message {
+    position: absolute;
+    top: 65vh; /* Moves it down to 70% of the viewport height */
+    left: 20vw;
+    font-size: 10px;
+    margin: clamp(5px, 2vw, 20px) 0;
+    color: #eee;
+    max-width: 100%;
+    line-height: 1.2;
+    z-index: 98;
+    min-height: 1.5em;
+    display: inline-block;
+    }
+
+    #log {
+    overflow-y: hidden;
+    text-align: left;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    max-width: 300px;
+    max-height: 100%;
+    overflow-y: auto;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #eee;
+    padding: 8px;
+    margin: 10px;
+    border-radius: 6px;
+    z-index: 10;
+    user-select: text;
+    line-height: 1.2;
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* IE and Edge */
+    }
+
+    #log::-webkit-scrollbar {
+    display: none;                  /* Chrome, Safari, Opera */
+    }
+
+    #tally {
+    text-align: right;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    max-width: 300px;
+    max-height: 100%;
+    overflow-y: auto;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #eee;
+    padding: 8px;
+    margin: 10px;
+    border-radius: 6px;
+    z-index: 10;
+    user-select: text;
+    line-height: 1.2;
+    }
+
+  </style>
+  
+  
+</head>
+<body>
+  <h1>Pomodoro Timer</h1>
+  <div id="timer">00:00:00</div>
+  <button id="startBtn">start</button>
+  <div id="message"></div>
+  <div id="log"></div>
+  <div id="tally"></div>
+  <div id="dailySummary" style="position:fixed;top:10px;right:10px;color:white;font-size:12px;z-index:9999;"></div>
+  <!-- Two sounds: Bugle and Bell -->
+  <audio id="bugle" src="https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg" preload="auto"></audio>
+  <audio id="bell" src="https://actions.google.com/sounds/v1/alarms/dinner_bell_triangle.ogg" preload="auto"></audio>
+  
+  <script src="timer.js"></script>
+</body>
+</html>
