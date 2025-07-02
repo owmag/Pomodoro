@@ -60,12 +60,14 @@ chrome.notifications.onClicked.addListener(() => {
       });
     }
   });
+   // ✅ Dismiss the clicked notification
+   chrome.notifications.clear("pomodoroNotification");
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "notify") {
     console.log("Background received message:", message);
-    chrome.notifications.create({
+    chrome.notifications.create('pomodoroNotification', {
       type: 'basic',
       iconUrl: 'icon-128.png',
       title: 'Pomodoro Timer',
